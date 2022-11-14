@@ -22,7 +22,7 @@ class MplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlabel('Inputs')
         self.axes.set_ylabel('Seconds')
         self.axes.set_title('Sorts')
-
+        
         super(MplCanvas, self).__init__(fig)
 
 
@@ -35,7 +35,12 @@ class MainWindow(QWidget):
             bubbleSort(arr)
             end = timeit.default_timer()
             return start, end, arr
-        elif sortType == 1:
+        if sortType == 1:
+            start = timeit.default_timer()
+            Parallel_bubble_sort(arr)
+            end = timeit.default_timer()
+            return start, end, arr
+        elif sortType == 2:
             start = timeit.default_timer()
             quickSort(arr, 0, len(arr) - 1)
             end = timeit.default_timer()
@@ -72,7 +77,7 @@ class MainWindow(QWidget):
         return inputs, timings, chartLabel
 
     def addsort_Clicked(self):
-        inputs, timings, chartLabel = self.sort(2, self.numSpin.value(), 1, 1000, self.sortCombo.currentIndex())
+        inputs, timings, chartLabel = self.sort(2, self.numSpin.value(), 1, 100000, self.sortCombo.currentIndex())
 
         self.sc.axes.plot(inputs, timings, self.colorCombo.currentText(), label=chartLabel)
 
@@ -105,6 +110,7 @@ class MainWindow(QWidget):
 
         self.sortCombo = QComboBox()
         self.sortCombo.addItem('Bubble Sort')
+        self.sortCombo.addItem('Parallel Bubble Sort')
         self.sortCombo.addItem('Quick Sort')
         sortLayout.addWidget(self.sortCombo)
 
@@ -120,7 +126,7 @@ class MainWindow(QWidget):
 
         self.numSpin = QSpinBox()
         self.numSpin.setMinimum(2)
-        self.numSpin.setMaximum(10000)
+        self.numSpin.setMaximum(100000)
         self.numSpin.setValue(100)
         sortLayout.addWidget(self.numSpin)
 

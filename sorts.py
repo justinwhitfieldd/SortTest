@@ -1,3 +1,35 @@
+import threading
+import itertools
+import os
+def Parallel_bubble_sort(array): 
+        #get biggest element in the list
+        biggest_item = max(array)
+        #get number of threads
+        num_threads = os.cpu_count() 
+        #create sublists as per number of threads
+        lists = [[] for _ in range(num_threads)]
+        #divide list into intervals for each sublist
+        split_factor = biggest_item//num_threads
+        #splitting into sublists
+        for j in range(1,len(lists)):
+            for i in array:
+                if i <= (split_factor*j):
+                        lists[j-1].append(i)
+                        array = [x for x in array if x != i]
+            lists[-1] = array
+        #start all threads for each sublist
+        active_threads = []
+        for list_item in lists:
+            t = threading.Thread(target=bubbleSort, args=(list_item,))
+            t.start()
+            active_threads.append(t)   
+        #stop active threads
+        for thread in active_threads:
+            thread.join()
+        #merge into one list
+        final_array = itertools.chain(*lists)
+        final_array = list(final_array)
+
 def bubbleSort(array):
     n = len(array)
 
